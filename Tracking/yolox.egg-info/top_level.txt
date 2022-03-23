@@ -1,0 +1,12 @@
+YOLOX_outputs
+build
+configs
+datasets
+demo
+deploy
+exps
+tools
+tutorials
+videos
+weights
+yolox

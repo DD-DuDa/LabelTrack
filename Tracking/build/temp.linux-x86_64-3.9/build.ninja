@@ -1,0 +1,21 @@
+ninja_required_version = 1.3
+cxx = c++
+
+cflags = -pthread -B /home/duda/miniconda3/envs/testmot/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -O2 -Wall -fPIC -O2 -isystem /home/duda/miniconda3/envs/testmot/include -I/home/duda/miniconda3/envs/testmot/include -fPIC -O2 -isystem /home/duda/miniconda3/envs/testmot/include -fPIC -I/mnt/c/Users/95152/Desktop/LabelTrack/Tracking/yolox/layers/csrc -I/home/duda/miniconda3/envs/testmot/lib/python3.9/site-packages/torch/include -I/home/duda/miniconda3/envs/testmot/lib/python3.9/site-packages/torch/include/torch/csrc/api/include -I/home/duda/miniconda3/envs/testmot/lib/python3.9/site-packages/torch/include/TH -I/home/duda/miniconda3/envs/testmot/lib/python3.9/site-packages/torch/include/THC -I/home/duda/miniconda3/envs/testmot/include/python3.9 -c
+post_cflags = -O3 -DTORCH_API_INCLUDE_EXTENSION_H '-DPYBIND11_COMPILER_TYPE="_gcc"' '-DPYBIND11_STDLIB="_libstdcpp"' '-DPYBIND11_BUILD_ABI="_cxxabi1011"' -DTORCH_EXTENSION_NAME=_C -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++14
+ldflags = 
+
+rule compile
+  command = $cxx -MMD -MF $out.d $cflags -c $in -o $out $post_cflags
+  depfile = $out.d
+  deps = gcc
+
+
+
+build /mnt/c/Users/95152/Desktop/LabelTrack/Tracking/build/temp.linux-x86_64-3.9/mnt/c/Users/95152/Desktop/LabelTrack/Tracking/yolox/layers/csrc/cocoeval/cocoeval.o: compile /mnt/c/Users/95152/Desktop/LabelTrack/Tracking/yolox/layers/csrc/cocoeval/cocoeval.cpp
+build /mnt/c/Users/95152/Desktop/LabelTrack/Tracking/build/temp.linux-x86_64-3.9/mnt/c/Users/95152/Desktop/LabelTrack/Tracking/yolox/layers/csrc/vision.o: compile /mnt/c/Users/95152/Desktop/LabelTrack/Tracking/yolox/layers/csrc/vision.cpp
+
+
+
+
+

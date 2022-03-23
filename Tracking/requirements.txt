@@ -1,0 +1,49 @@
+# TODO: Update with exact module version
+numpy
+torch>=1.7
+# opencv_python
+loguru
+scikit-image
+tqdm
+torchvision>=0.10.0
+Pillow
+thop
+ninja
+tabulate
+tensorboard
+lap
+motmetrics
+filterpy
+h5py
+
+# verified versions
+# onnx==1.8.1
+# onnxruntime==1.8.0
+# onnx-simplifier==0.3.5
+
+# plotting ------------------------------------
+
+pandas>=1.1.4
+seaborn>=0.11.0
+
+# deep_sort -----------------------------------
+
+easydict
+
+# torchreid
+
+Cython
+h5py
+six
+tb-nightly
+future
+yacs
+gdown
+flake8
+yapf
+isort==4.3.21
+imageio
+
+opencv-python-headless
+pyqt5
+qt-material
