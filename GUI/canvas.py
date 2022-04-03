@@ -138,10 +138,11 @@ class canvas(QWidget):
         self.newShape.emit()
         self.update()
 
-    def update_shape(self, id, frameId, label, tlwh, score, auto = 'M'):
+    def update_shape(self, id, frameId, cls_id, tlwh, score, auto = 'M'):
         detectPos = Shape()
         detectPos.id = id
         detectPos.frameId = frameId
+        label = VISDRONE_CLASSES[cls_id]
         detectPos.label = label
         detectPos.score = score
         detectPos.auto = auto

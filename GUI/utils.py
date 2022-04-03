@@ -6,17 +6,28 @@ import sys
 import os
 import os.path as osp
 from GUI.color import *
-try:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
-    QT5 = True
-except ImportError:
-    from PyQt4.QtGui import *
-    from PyQt4.QtCore import *
-    QT5 = False
+
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+QT5 = True
+
 
 IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
+
+VISDRONE_CLASSES = (
+    "pedestrian",
+    "people",
+    "bicycle",
+    "car",
+    "van",
+    "truck",
+    "tricycle",
+    "awning-tricycle",
+    "bus",
+    "motor",
+    "others",
+)
 
 def new_icon(icon):
     return QIcon(':/' + icon)
@@ -83,10 +94,29 @@ def format_shortcut(text):
 
 
 def generate_color_by_text(text):
-    if text == "person":
+    if text == "pedestrian":
         return PERSON_LINE_COLOR, PERSON_FILL_COLOR
+    elif text == "people":
+        return PEOPLE_LINE_COLOR, PEOPLE_FILL_COLOR
+    elif text == "bicycle":
+        return BICYCLE_LINE_COLOR, BICYCLE_FILL_COLOR
     elif text == "car":
         return CAR_LINE_COLOR, CAR_FILL_COLOR
+    elif text == "van":
+        return VAN_LINE_COLOR, VAN_FILL_COLOR
+    elif text == "truck":
+        return TRUCK_LINE_COLOR, TRUCK_FILL_COLOR
+    elif text == "tricycle":
+        return TRICYCLE_LINE_COLOR, TRICYCLE_FILL_COLOR
+    elif text == "awning-tricycle":
+        return AWNING_TRICYCLE_LINE_COLOR, AWNING_TRICYCLE_FILL_COLOR
+    elif text == "bus":
+        return BUS_LINE_COLOR, BUS_FILL_COLOR
+    elif text == "motor":
+        return MOTOR_LINE_COLOR, MOTOR_FILL_COLOR  
+    elif text == "others":
+        return OTHER_LINE_COLOR, OTHER_FILL_COLOR 
+
     s = ustr(text)
     hash_code = int(hashlib.sha256(s.encode('utf-8')).hexdigest(), 16)
     r = int((hash_code / 255) % 255)

@@ -10,6 +10,7 @@ from yolox.exp import Exp as MyExp
 class Exp(MyExp):
     def __init__(self):
         super(Exp, self).__init__()
+        self.num_classes = 11
         self.depth = 0.33
         self.width = 0.375
         self.scale = (0.5, 1.5)

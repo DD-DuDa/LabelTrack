@@ -141,6 +141,8 @@ class Predictor(object):
         self.test_size = exp.test_size
         self.device = device
         self.fp16 = fp16
+        self.rgb_means = (0.485, 0.456, 0.406)
+        self.std = (0.229, 0.224, 0.225)
         if trt_file is not None:
             from torch2trt import TRTModule
 
@@ -150,8 +152,7 @@ class Predictor(object):
             x = torch.ones((1, 3, exp.test_size[0], exp.test_size[1]), device=device)
             self.model(x)
             self.model = model_trt
-        self.rgb_means = (0.485, 0.456, 0.406)
-        self.std = (0.229, 0.224, 0.225)
+        
 
     def inference(self, img, timer):
         img_info = {"id": 0}
@@ -202,6 +203,7 @@ def frames_track(exp, predictor, img_list, config, signal, canvas):
                 # detectPos = Shape()
                 tlwh = t.tlwh
                 tid = t.track_id
+                cid = int(t.cls_id)
 
                 vertical = tlwh[2] / tlwh[3] > config.aspect_ratio_thresh
                 if tlwh[2] * tlwh[3] > config.min_box_area and not vertical:
@@ -213,21 +215,7 @@ def frames_track(exp, predictor, img_list, config, signal, canvas):
                         f"{frame_id},{tid},{tlwh[0]:.2f},{tlwh[1]:.2f},{tlwh[2]:.2f},{tlwh[3]:.2f},{t.score:.2f},-1,-1,-1\n"
                     )
                     # 更新图像信息
-                    canvas.update_shape(tid, frame_id, "person", tlwh, t.score, 'A')
-                    # detectPos.id = tid
-                    # detectPos.frameId = frame_id
-                    # # TODO 
-                    # detectPos.label = "person"
-
-                    # generate_line_color, generate_fill_color = generate_color_by_text(detectPos.label)
-                    # canvas.set_shape_label(detectPos, detectPos.label, detectPos.id, generate_line_color, generate_fill_color)
-                    # detectPos.add_point(QPointF(tlwh[0], tlwh[1]))
-                    # detectPos.add_point(QPointF(tlwh[0] + tlwh[2], tlwh[1]))
-                    
-                    # detectPos.add_point(QPointF(tlwh[0] + tlwh[2], tlwh[1] + tlwh[3]))
-                    # detectPos.add_point(QPointF(tlwh[0], tlwh[1] + tlwh[3]))
-                    # detectPos.close()
-                    # canvas.shapes.append(detectPos)
+                    canvas.update_shape(tid, frame_id, cid, tlwh, t.score, 'A')
             timer.toc()
             online_im = plot_tracking(
                 img_info['raw_img'], online_tlwhs, online_ids, frame_id=frame_id, fps=1. / timer.average_time

@@ -44,9 +44,6 @@ class MyWindow(QMainWindow, QtStyleTools):
         
         # 视频播放器
         self.player = QMediaPlayer() 
-        # TODO 自定义Widget
-        self.videoWiget = QVideoWidget()  # 独立窗口播放视频
-        self.videoWiget.setMinimumSize(800, 600)
         self.videoFileUrl = ""
         self.filePath = ""
         self.labelPath = ""
@@ -83,7 +80,7 @@ class MyWindow(QMainWindow, QtStyleTools):
         self.actionFit.triggered.connect(self.adjust_scale)
         # 标签
         # TODO
-        self.labelHint = ['person', 'car']
+        self.labelHint = ['pedestrian', 'people', 'bicycle', 'car', 'van', 'truck', 'tricycle', 'awning-tricycle', 'bus', 'motor', 'others']
         self.defaultLabel = self.labelHint[0]
         self.labelCombobox = DefaultLabelComboBox(self, items = self.labelHint)
         self.toolBarVertical.addWidget(self.labelCombobox)
@@ -163,11 +160,6 @@ class MyWindow(QMainWindow, QtStyleTools):
 
     # 播放视频
     def video_play(self):
-        # self.player.setVideoOutput(self.videoWiget)  
-        # self.player.setMedia(QMediaContent(self.videoFileUrl))  # 选取视频文件
-        # self.videoWiget.show()
-        # self.player.play()
-        # self.canvas.curFramesId = 1
         if self.isPlaying is False:
             self.isPlaying = True
             self.pushButtonPlay.setIcon(QIcon("./GUI/resources/svg/stop.svg"))

@@ -3,8 +3,10 @@ save_result: False
 fp16: False
 experiment_name: AutoLabelTrack
 name: bytetrack_m_track
-exp_file: ./Tracking/exps/example/mot/yolox_m_mix_det.py
-ckpt: ./Tracking/weights/bytetrack_m_mot17.pth.tar
+# exp_file: ./Tracking/exps/example/mot/yolox_m_mix_det.py
+# ckpt: ./Tracking/weights/bytetrack_m_mot17.pth.tar
+exp_file: ./Tracking/exps/default/yolox_m.py
+ckpt: ./Tracking/weights/yolox_m_vd.pth.tar
 device: gpu
 fps: 30
 track_thresh: 0.5
@@ -13,3 +15,4 @@ match_thresh: 0.8
 aspect_ratio_thresh: 1.6
 min_box_area: 10
 mot20: False
+
