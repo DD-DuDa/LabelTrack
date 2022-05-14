@@ -2,7 +2,7 @@
 
 **LabelTrack是为多目标跟踪```MOT```写的一个自动标注工具**
 
-![](./assets/LabelTrack.png)
+![](./assets/LabelTrack.jpg)
 
 ## 安装
 ```
@@ -27,9 +27,10 @@ python setup.py develop
 |  ----  | ----  |
 | w  | 标注 |
 | s, del  | 删除所选标注框 |
+| ctrl + 滚轮 | 放大，缩小 |
 
 ## 使用方法
-1. 下载[ByteTrack](https://github.com/ifzhang/ByteTrack)模型权重，默认使用```bytetrack_m_mot17```，放入```./Tracking/weights```中
+1. 下载对应模型权重
 2. 修改```./Tracking/configs```中的yaml文件（exp_file, ckpt）
 ```
 cd LabelTrack
@@ -37,12 +38,15 @@ python main.py
 ```
 ```./Tracking/videos``` 有demo视频
 
+## 已更新
+* 【2022.5.14】标注图片大小缩放，拖拽；工具栏等按钮完善；标注类别有11种
+
 ## 待更新
-- [ ] * 当前模型是ByteTrack，只支持```person```
-- [ ] 标注图片大小缩放，拖拽
-- [ ] 工具栏等按钮完善
 - [ ] 操作错误提醒完善
-- [ ] 。。。
+- [ ] 取消所有标注框
+- [ ] 手动标注框的ID从没有出现的开始
+- [ ] 手动标注框延续所有帧
+- [ ] 更多需要的功能
 
 ## 参考
 1. https://github.com/tzutalin/labelImg

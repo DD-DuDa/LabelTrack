@@ -4,7 +4,7 @@ fp16: False
 experiment_name: AutoLabelTrack
 name: bytetrack_tiny_track
 exp_file: ./Tracking/exps/default/yolox_tiny.py
-ckpt: ./Tracking/weights/yolox_tiny_best_ckpt.pth.tar
+ckpt: /mnt/d/bigProject/graduationDesign/use/weights/yolox_tiny_best_ckpt.pth.tar # 自行修改
 device: gpu
 fps: 30
 track_thresh: 0.5
