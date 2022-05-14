@@ -10,8 +10,8 @@ from yolox.data.dataloading import get_yolox_datadir
 from .detection import Detection
 from .track import Track
 
-sys.path.append('deepsort_tracker/deep-person-reid')
-from torchreid.utils import FeatureExtractor
+# sys.path.append('deepsort_tracker/deep-person-reid')
+# from torchreid.utils import FeatureExtractor
 
 def _cosine_distance(a, b, data_is_normalized=False):
     if not data_is_normalized:

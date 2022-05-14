@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 import cv2
 from GUI.tools import img_cv_to_qt
 from GUI.trackworker import trackWorker
+from GUI.fileworker import fileWorker
 from GUI.shape import Shape
 from GUI.color import *
 from GUI.utils import *
@@ -19,6 +20,8 @@ CURSOR_GRAB = Qt.OpenHandCursor
 class canvas(QWidget):
     newShape = pyqtSignal()
     drawingPolygon = pyqtSignal(bool)
+    scrollRequest = pyqtSignal(int, int)
+    zoomRequest = pyqtSignal(int)
 
     CREATE, EDIT = list(range(2))
 
@@ -27,7 +30,11 @@ class canvas(QWidget):
     def __init__(self, *args, **kwargs):
         super(canvas, self).__init__(*args, **kwargs)
         self.trackWorker = trackWorker(self) # 跟踪线程
-        self.trackWorker.sinOut.connect(self.update_status)
+        self.trackWorker.sinOut.connect(self.update_track_status)
+        self.fileWorker = fileWorker(self) # 导入文件线程
+        self.fileWorker.sinOut.connect(self.update_file_status)
+        self.fileWorker.finished.connect(self.load_frames)
+
         self.numFrames = 0
         self.imgFrames = []  # 储存所有图像帧
         self.curFramesId = 1
@@ -59,23 +66,13 @@ class canvas(QWidget):
         self.setMouseTracking(True)
         self.setFocusPolicy(Qt.WheelFocus)
     
-    # TODO: 适配文件夹; 状态栏加载
     def init_frame(self, path):
-        
-        if os.path.isdir(path):
-            files = get_image_list(path)
-            for file in files:
-                frame = cv2.imread(file)
-                self.imgFrames.append(frame)
-        else:
-            self.imgFrames = []
-            self.videoCapture = cv2.VideoCapture(path)
-            rval = self.videoCapture.isOpened()
-            
-            while rval: 
-                rval, frame = self.videoCapture.read()  
-                if rval:
-                    self.imgFrames.append(frame)
+        # file worker 线程
+        self.fileWorker.load_path(path)
+        self.fileWorker.start()
+
+    # finish
+    def load_frames(self):
         self.trackWorker.load_frames(self.imgFrames) # 跟踪加载图片帧
         self.numFrames = len(self.imgFrames) # 获取视频的总帧数
         frame_0 = self.imgFrames[0]
@@ -91,9 +88,10 @@ class canvas(QWidget):
 
     def track_frame(self):
         self.trackWorker.load_frames(self.imgFrames)
+        self.trackWorker.load_model(self.window.currentModel)
         self.trackWorker.start()
 
-    def update_status(self, message):
+    def update_track_status(self, message):
         self.window.statusBar.showMessage(message)
         # if re.search(r'.*(0).+/.*', message):
         #     self.frameLabel.setPixmap(QtGui.QPixmap.fromImage(img_cv_to_qt(self.imgFrames[0])))
@@ -101,10 +99,23 @@ class canvas(QWidget):
         self.window.vedioSlider.setMaximum(self.numFrames)
         self.repaint()
 
+    def update_file_status(self, message):
+        self.window.statusBar.showMessage(message)
+
     def transform_pos(self, point):
         """Convert from widget-logical coordinates to painter-logical coordinates."""
         return point / self.scale - self.offset_to_center()
 
+    # These two, along with a call to adjustSize are required for the
+    # scroll area.
+    def sizeHint(self):
+        return self.minimumSizeHint()
+
+    def minimumSizeHint(self):
+        if self.pixmap:
+            return self.scale * self.pixmap.size()
+        return super(canvas, self).minimumSizeHint()
+    
     def offset_to_center(self):
         s = self.scale
         area = super(canvas, self).size()
@@ -394,7 +405,7 @@ class canvas(QWidget):
 
         p.end()
     
-    # TODO: 边界
+    # TODO: 边界, self.window.label_coordinates
     def mouseMoveEvent(self, ev):
         """Update line with last point and current coordinates."""
         pos = self.transform_pos(ev.pos())
@@ -462,16 +473,15 @@ class canvas(QWidget):
                         'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
             return
 
-        # # pixmap moving
-        # if Qt.RightButton & ev.buttons():
-        #     pos = self.transform_pos(ev.pos(), right = True)
-        #     self.override_cursor(CURSOR_MOVE)
-        #     self.deltaPos = pos - self.prevRightPoint
-        #     self.pointPos += self.deltaPos
-        #     self.prevRightPoint = pos
-        #     self.repaint()
+        # pixmap moving
+        if Qt.RightButton & ev.buttons():
+            delta_x = pos.x() - self.pan_initial_pos.x()
+            delta_y = pos.y() - self.pan_initial_pos.y()
+            self.scrollRequest.emit(delta_x, Qt.Horizontal)
+            self.scrollRequest.emit(delta_y, Qt.Vertical)
+            self.update()
 
-        #     return
+            return
 
         # Just hovering over the canvas, 2 possibilities:
         # - Highlight shapes
@@ -525,15 +535,17 @@ class canvas(QWidget):
             if self.drawing():
                 self.handle_drawing(pos)
             else:
+                pass
                 selection = self.select_shape_point(pos)
                 self.prev_point = pos
                 if selection is None:
-                    # pan
-                    QApplication.setOverrideCursor(QCursor(Qt.OpenHandCursor))
-                    self.pan_initial_pos = pos
+                    pass
+                #     # pan
+                #     QApplication.setOverrideCursor(QCursor(Qt.OpenHandCursor))
+                #     self.pan_initial_pos = pos
         elif ev.button() == Qt.RightButton:
-            self.override_cursor(CURSOR_MOVE)
-            self.prevRightPoint = pos
+            self.override_cursor(CURSOR_GRAB)
+            self.pan_initial_pos = pos
 
         self.update()
 
@@ -559,3 +571,25 @@ class canvas(QWidget):
                         self.set_shape_label(shape, text, id, generate_line_color, generate_fill_color)
                         break
         self.repaint()
+
+    def wheelEvent(self, ev):
+        qt_version = 4 if hasattr(ev, "delta") else 5
+        if qt_version == 4:
+            if ev.orientation() == Qt.Vertical:
+                v_delta = ev.delta()
+                h_delta = 0
+            else:
+                h_delta = ev.delta()
+                v_delta = 0
+        else:
+            delta = ev.angleDelta()
+            h_delta = delta.x()
+            v_delta = delta.y()
+
+        mods = ev.modifiers()
+        if Qt.ControlModifier == int(mods) and v_delta:
+            self.zoomRequest.emit(v_delta)
+        else:
+            v_delta and self.scrollRequest.emit(v_delta, Qt.Vertical)
+            h_delta and self.scrollRequest.emit(h_delta, Qt.Horizontal)
+        ev.accept()

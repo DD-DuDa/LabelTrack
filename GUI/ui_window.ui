@@ -19,13 +19,29 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="canvas" name="canvas" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QScrollArea" name="scroll">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
       </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1040</width>
+         <height>601</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
     </item>
     <item>
@@ -200,7 +216,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="buttonPre">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -226,7 +242,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="buttonNext">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -252,7 +268,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_4">
+       <widget class="QPushButton" name="buttonForward">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -324,8 +340,6 @@
    <addaction name="actionDict"/>
    <addaction name="actionGt"/>
    <addaction name="actionSave"/>
-   <addaction name="actionUndo"/>
-   <addaction name="actionRedo"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="toolBarVertical">
@@ -361,6 +375,10 @@
    </property>
   </action>
   <action name="actionGt">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/load.svg</normaloff>resources/svg/load.svg</iconset>
+   </property>
    <property name="text">
     <string>标注加载</string>
    </property>
@@ -369,30 +387,55 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/save.svg</normaloff>resources/svg/save.svg</iconset>
+   </property>
    <property name="text">
     <string>保存</string>
    </property>
    <property name="toolTip">
-    <string>保存视频</string>
+    <string>保存视频 [Ctrl+S]</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionUndo">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/undo.svg</normaloff>resources/svg/undo.svg</iconset>
+   </property>
    <property name="text">
     <string>撤销</string>
    </property>
    <property name="toolTip">
-    <string>Undo</string>
+    <string>撤销 [Ctrl+Z]</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
-  <action name="actionRedo">
+  <action name="actionRedo [Ctrl+Shift+Z]">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/redo.svg</normaloff>resources/svg/redo.svg</iconset>
+   </property>
    <property name="text">
     <string>恢复</string>
    </property>
    <property name="toolTip">
-    <string>Redo</string>
+    <string>恢复</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
   <action name="actionModel">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/model.svg</normaloff>resources/svg/model.svg</iconset>
+   </property>
    <property name="text">
     <string>模型</string>
    </property>
@@ -401,11 +444,19 @@
    </property>
   </action>
   <action name="actionTrack">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/track.svg</normaloff>resources/svg/track.svg</iconset>
+   </property>
    <property name="text">
     <string>跟踪</string>
    </property>
   </action>
   <action name="actionFit">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/fit.svg</normaloff>resources/svg/fit.svg</iconset>
+   </property>
    <property name="text">
     <string>适应窗口</string>
    </property>
@@ -414,6 +465,10 @@
    </property>
   </action>
   <action name="actionAnnot">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/annot.svg</normaloff>resources/svg/annot.svg</iconset>
+   </property>
    <property name="text">
     <string>标注</string>
    </property>
@@ -422,6 +477,10 @@
    </property>
   </action>
   <action name="actionDict">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/dict.svg</normaloff>resources/svg/dict.svg</iconset>
+   </property>
    <property name="text">
     <string>文件夹</string>
    </property>
@@ -429,15 +488,31 @@
     <string>选择存放视频帧的文件夹</string>
    </property>
   </action>
+  <action name="actionZoomIn">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/zoomin.svg</normaloff>resources/svg/zoomin.svg</iconset>
+   </property>
+   <property name="text">
+    <string>放大</string>
+   </property>
+   <property name="toolTip">
+    <string>放大 [Ctrl+滚轮↑]</string>
+   </property>
+  </action>
+  <action name="actionZoomOut">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/zoomout.svg</normaloff>resources/svg/zoomout.svg</iconset>
+   </property>
+   <property name="text">
+    <string>缩小</string>
+   </property>
+   <property name="toolTip">
+    <string>缩小 [Ctrl+滚轮↓]</string>
+   </property>
+  </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>canvas</class>
-   <extends>QWidget</extends>
-   <header location="global">./GUI/canvas.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
