@@ -107,9 +107,11 @@ class MyWindow(QMainWindow, QtStyleTools):
         self.labelCombobox = DefaultLabelComboBox(self, items = self.labelHint)
         self.toolBarVertical.addWidget(self.labelCombobox)
         self.toolBarVertical.addAction(self.actionAnnot)
+        self.toolBarVertical.addAction(self.actionDelete)
         self.toolBarVertical.addSeparator()
         self.toolBarVertical.addAction(self.actionModel)
         self.toolBarVertical.addAction(self.actionTrack)
+        self.actionDelete.triggered.connect(self.canvas.delete_shape)
         self.actionModel.triggered.connect(self.modelSelect)
         self.actionAnnot.triggered.connect(self.set_create_mode)
         self.actionTrack.triggered.connect(self.canvas.track_frame)  # 自动跟踪
@@ -391,9 +393,16 @@ class MyWindow(QMainWindow, QtStyleTools):
             w = max_x - min_x
             h = max_y - min_y
             classId = VISDRONE_CLASSES.index(shape.label)
-            results.append(
-                f"{shape.frameId},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
-            )
+            if shape.auto == 'M':
+                for i in range(1, self.canvas.numFrames + 1):
+                    results.append(
+                    f"{i},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
+                )
+            else:
+                results.append(
+                    f"{shape.frameId},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
+                )
+            
         with open(savedPath, 'w') as f:
             f.writelines(results)
             print(f"save results to {savedPath}")

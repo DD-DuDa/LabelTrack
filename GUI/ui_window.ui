@@ -512,6 +512,18 @@
     <string>缩小 [Ctrl+滚轮↓]</string>
    </property>
   </action>
+  <action name="actionDelete">
+   <property name="icon">
+    <iconset>
+     <normaloff>resources/svg/delete.svg</normaloff>resources/svg/delete.svg</iconset>
+   </property>
+   <property name="text">
+    <string>清除</string>
+   </property>
+   <property name="toolTip">
+    <string>清除所有标注框</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

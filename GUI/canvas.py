@@ -179,6 +179,14 @@ class canvas(QWidget):
         self.newShape.emit()
         self.update()
 
+    def delete_shape(self):
+        self.current = None
+        self.shapeId = 0
+        self.selected_shape = None  # save the selected shape here
+        self.shapes = []
+        self.update()
+        self.repaint()
+
     def load_pixmap(self, pixmap):
         self.pixmap = pixmap
         # self.shapes = []
@@ -318,7 +326,7 @@ class canvas(QWidget):
             self.select_shape(shape)
             return self.h_vertex
         for shape in reversed(self.shapes):
-            if shape.frameId == self.curFramesId:
+            if shape.frameId == self.curFramesId or shape.auto == 'M':
                 if shape.contains_point(point):
                     self.select_shape(shape)
                     self.calculate_offsets(shape, point)
@@ -380,7 +388,7 @@ class canvas(QWidget):
             # if (shape.selected or not self._hide_background) and self.isVisible(shape):
             #     shape.fill = shape.selected or shape == self.h_shape
             #     shape.paint(p)
-            if shape.frameId == self.curFramesId:
+            if shape.frameId == self.curFramesId or shape.auto == 'M':
                 shape.fill = shape.selected or shape == self.h_shape # 是否填充
                 shape._highlight_point = shape == self.h_shape
                 shape.paint(p)
@@ -491,7 +499,7 @@ class canvas(QWidget):
         for shape in reversed([s for s in self.shapes]):
             # Look for a nearby vertex to highlight. If that fails,
             # check if we happen to be inside a shape.
-            if shape.frameId == self.curFramesId:
+            if shape.frameId == self.curFramesId or shape.auto == 'M':
                 index = shape.nearest_vertex(pos, self.epsilon)
                 if index is not None:
                     if self.selected_vertex():
