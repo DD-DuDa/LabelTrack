@@ -51,3 +51,6 @@ python main.py
 ## 参考
 1. https://github.com/tzutalin/labelImg
 2. https://github.com/ifzhang/ByteTrack
+
+## B站视频
+https://www.bilibili.com/video/BV15Y4y137Fp/

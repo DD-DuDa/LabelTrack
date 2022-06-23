@@ -114,7 +114,7 @@ def generate_color_by_text(text):
         return BUS_LINE_COLOR, BUS_FILL_COLOR
     elif text == "motor":
         return MOTOR_LINE_COLOR, MOTOR_FILL_COLOR  
-    elif text == "others":
+    elif text == "others" or text == "liangzai":
         return OTHER_LINE_COLOR, OTHER_FILL_COLOR 
 
     s = ustr(text)
