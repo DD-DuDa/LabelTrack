@@ -31,6 +31,10 @@ python setup.py develop
 
 ## 使用方法
 1. 下载对应模型权重
+* [bytetrack_m_mot17.pth.tar (code:2zkp)](https://pan.baidu.com/s/1M-nw-eKrPs3yj9XZ5ryArA)
+* [yolox_l_best_ckpt.pth.tar (code:493b)](https://pan.baidu.com/s/1C8pgalxsC2MGGrcB175iiQ)
+* [yolox_m_vd.pth.tar (code:y9qv)](https://pan.baidu.com/s/1agpN4O7JsqetGHN6bn7qfw)
+* [yolox_tiny_best_ckpt.pth.tar (code:v4u1)](https://pan.baidu.com/s/1Rs96E0TmW3cIXUvrmrjA2w)
 2. 修改```./Tracking/configs```中的yaml文件（exp_file, ckpt）
 ```
 cd LabelTrack
@@ -39,6 +43,7 @@ python main.py
 ```./Tracking/videos``` 有demo视频
 
 ## 已更新
+* 【2022.7.16】上传权重文件（百度网盘）
 * 【2022.5.31】取消所有标注框，手动标注框延续所有帧
 * 【2022.5.14】标注图片大小缩放，拖拽；工具栏等按钮完善；标注类别有11种
 
