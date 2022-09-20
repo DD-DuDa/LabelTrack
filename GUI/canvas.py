@@ -137,14 +137,27 @@ class canvas(QWidget):
             self.update()
             return
 
-        self.shapeId += 1
+        # self.shapeId += 1
         self.current.id = self.shapeId
         self.current.label = self.window.defaultLabel
         self.current.frameId = self.curFramesId
         self.current.score = 1
         self.current.close()
-        self.shapes.append(self.current)
+        # self.shapes.append(self.current)
+        for i in range(self.curFramesId, self.numFrames + 1):
+            newManualShape = Shape()
+            newManualShape = self.current.copy()
+            newManualShape.frameId = i
+            self.shapeId += 1
+            newManualShape.id = self.shapeId
+            generate_line_color, generate_fill_color = generate_color_by_text(newManualShape.label)
+            newManualShape.line_color = generate_line_color
+            newManualShape.fill_color = generate_fill_color
+            self.shapes.append(newManualShape)
+
+        
         self.current = None
+        newManualShape = None
         # self.set_hiding(False)
         self.newShape.emit()
         self.update()
@@ -207,7 +220,7 @@ class canvas(QWidget):
             self.current.add_point(QPointF(max_x, min_y))
             self.current.add_point(target_pos)
             self.current.add_point(QPointF(min_x, max_y))
-
+            
             self.finalise()
         elif not self.out_of_pixmap(pos):
             self.current = Shape()
@@ -326,7 +339,7 @@ class canvas(QWidget):
             self.select_shape(shape)
             return self.h_vertex
         for shape in reversed(self.shapes):
-            if shape.frameId == self.curFramesId or shape.auto == 'M':
+            if shape.frameId == self.curFramesId:
                 if shape.contains_point(point):
                     self.select_shape(shape)
                     self.calculate_offsets(shape, point)
@@ -388,12 +401,15 @@ class canvas(QWidget):
             # if (shape.selected or not self._hide_background) and self.isVisible(shape):
             #     shape.fill = shape.selected or shape == self.h_shape
             #     shape.paint(p)
-            if shape.frameId == self.curFramesId or shape.auto == 'M':
+            # if shape.frameId == self.curFramesId or shape.auto == 'M':
+            #     shape.fill = shape.selected or shape == self.h_shape # 是否填充
+            #     shape._highlight_point = shape == self.h_shape
+            #     shape.paint(p)
+            if shape.frameId == self.curFramesId:
                 shape.fill = shape.selected or shape == self.h_shape # 是否填充
                 shape._highlight_point = shape == self.h_shape
                 shape.paint(p)
-
-
+               
         # 拖拽时显示矩形
         if self.current is not None and len(self.line) == 2:
             left_top = self.line[0]
@@ -499,7 +515,7 @@ class canvas(QWidget):
         for shape in reversed([s for s in self.shapes]):
             # Look for a nearby vertex to highlight. If that fails,
             # check if we happen to be inside a shape.
-            if shape.frameId == self.curFramesId or shape.auto == 'M':
+            if shape.frameId == self.curFramesId:
                 index = shape.nearest_vertex(pos, self.epsilon)
                 if index is not None:
                     if self.selected_vertex():

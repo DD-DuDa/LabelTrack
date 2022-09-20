@@ -23,6 +23,7 @@ from GUI.utils import *
 from GUI.ustr import ustr
 from GUI.load_worker import loadWorker
 from GUI.model_dialog import ModelDialog
+from GUI.shape import Shape
 
 # GPU渲染，加速
 if hasattr(Qt, 'AA_ShareOpenGLContexts'):
@@ -207,6 +208,7 @@ class MyWindow(QMainWindow, QtStyleTools):
         self.vedioSlider.setValue(pos)
         self.canvas.change_frame(pos)
         self.adjust_scale()
+
 
     # 播放视频
     def video_play(self):
@@ -393,15 +395,19 @@ class MyWindow(QMainWindow, QtStyleTools):
             w = max_x - min_x
             h = max_y - min_y
             classId = VISDRONE_CLASSES.index(shape.label)
-            if shape.auto == 'M':
-                for i in range(1, self.canvas.numFrames + 1):
-                    results.append(
-                    f"{i},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
-                )
-            else:
-                results.append(
-                    f"{shape.frameId},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
-                )
+            results.append(
+                f"{shape.frameId},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
+            )
+            # if shape.auto == 'M':
+            #     # TODO
+            #     for i in range(1, self.canvas.numFrames + 1):
+            #         results.append(
+            #         f"{i},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
+            #     )
+            # else:
+            #     results.append(
+            #         f"{shape.frameId},{shape.id},{min_x},{min_y},{w},{h},{shape.score:.2f},{classId},0,0\n"
+            #     )
             
         with open(savedPath, 'w') as f:
             f.writelines(results)

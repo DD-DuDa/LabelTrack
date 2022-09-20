@@ -202,16 +202,24 @@ class Shape(object):
         self._highlight_index = None
 
     def copy(self):
-        shape = Shape("%s" % self.label)
+        # shape = Shape("%s" % self.label)
+        shape = Shape()
+        shape.label = self.label
+        shape.id = self.id
+        shape.frameId = self.frameId
+        shape.score = self.score
+        shape.paint_label = self.paint_label
+        shape.auto = self.auto
         shape.points = [p for p in self.points]
         shape.fill = self.fill
         shape.selected = self.selected
         shape._closed = self._closed
-        if self.line_color != Shape.line_color:
-            shape.line_color = self.line_color
-        if self.fill_color != Shape.fill_color:
-            shape.fill_color = self.fill_color
+        #if self.line_color != Shape.line_color:
+        shape.line_color = self.line_color
+        #if self.fill_color != Shape.fill_color:
+        shape.fill_color = self.fill_color
         shape.difficult = self.difficult
+        shape.select_line_color = self.select_line_color
         return shape
 
     def __len__(self):
